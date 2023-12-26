@@ -11,7 +11,9 @@ import com.david.service.models.WeatherResultModel
 import com.david.weatherchannel.R
 import com.david.weatherchannel.binding.viewBinding
 import com.david.weatherchannel.databinding.FragmentWeatherResultBinding
+import com.david.weatherchannel.extensions.isKeyboardVisible
 import com.david.weatherchannel.extensions.loadWeatherIcon
+import com.david.weatherchannel.extensions.onQueryTextSubmit
 import com.david.weatherchannel.extensions.repeatOnLifecycleStarted
 import com.david.weatherchannel.weather_result.viewmodel.WeatherResultViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,6 +27,14 @@ class WeatherResultFragment : Fragment(R.layout.fragment_weather_result) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.searchBar.onQueryTextSubmit { query ->
+            weatherResultModel.fetchWeatherByCity(query)
+        }
+
+        binding.searchBar.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            binding.searchBar.isKeyboardVisible = hasFocus
+        }
 
         repeatOnLifecycleStarted {
             weatherResultModel.weatherResult.collect { result ->
@@ -65,7 +75,7 @@ class WeatherResultFragment : Fragment(R.layout.fragment_weather_result) {
             R.string.title_humidity,
             weatherResult.main?.humidity
         )
-        
+
         val weatherData = weatherResult.weather?.firstOrNull() ?: return
         weatherTitle.text = weatherData.main
         weatherDescription.text = weatherData.description
