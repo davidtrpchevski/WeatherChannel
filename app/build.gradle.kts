@@ -46,6 +46,7 @@ dependencies {
 
     implementation(projects.service)
     implementation(projects.networking)
+    implementation(projects.coroutines)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appCompat)

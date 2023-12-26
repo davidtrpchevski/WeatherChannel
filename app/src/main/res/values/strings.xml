@@ -9,4 +9,5 @@
     <string name="title_humidity">%1$d %%\nHumidity</string>
     <string name="enable_gps">Please enable Location settings</string>
     <string name="using_approx_location">Using network to determine approximate location</string>
+    <string name="enable_location_permissions">Please enable location permissions</string>
 </resources>

@@ -16,6 +16,7 @@ import com.david.weatherchannel.extensions.loadWeatherIcon
 import com.david.weatherchannel.extensions.onQueryTextSubmit
 import com.david.weatherchannel.extensions.repeatOnLifecycleStarted
 import com.david.weatherchannel.location.LocationPermissionHandler
+import com.david.weatherchannel.utils.Toaster
 import com.david.weatherchannel.weather_result.viewmodel.WeatherResultViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -25,16 +26,28 @@ import kotlin.math.roundToInt
 class WeatherResultFragment : Fragment(R.layout.fragment_weather_result) {
 
     private val binding by viewBinding(FragmentWeatherResultBinding::bind)
-    private val weatherResultModel by viewModels<WeatherResultViewModel>()
+    private val weatherResultViewModel by viewModels<WeatherResultViewModel>()
 
     @Inject
     lateinit var locationPermissionHandler: LocationPermissionHandler
 
+    @Inject
+    lateinit var toaster: Toaster
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        locationPermissionHandler.checkLocationPermission(
+            onDenied = {
+                toaster.shortToast(R.string.enable_location_permissions)
+            },
+            onGranted = {
+                weatherResultViewModel.getCurrentLocation()
+            }
+        )
+
         binding.searchBar.onQueryTextSubmit { query ->
-            weatherResultModel.fetchWeatherByCity(query)
+            weatherResultViewModel.fetchWeatherByCity(query)
         }
 
         binding.searchBar.setOnQueryTextFocusChangeListener { _, hasFocus ->
@@ -42,25 +55,13 @@ class WeatherResultFragment : Fragment(R.layout.fragment_weather_result) {
         }
 
         repeatOnLifecycleStarted {
-            weatherResultModel.weatherResult.collect { result ->
+            weatherResultViewModel.weatherResult.collect { result ->
                 binding.loadingProgress.isVisible = result.isLoading
                 result.onSuccess { weatherData ->
                     binding.fillWeatherData(weatherData)
                 }
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        locationPermissionHandler.checkLocationPermission(
-            onDenied = {
-
-            },
-            onGranted = {
-
-            }
-        )
     }
 
     private fun FragmentWeatherResultBinding.fillWeatherData(weatherResult: WeatherResultModel) {
