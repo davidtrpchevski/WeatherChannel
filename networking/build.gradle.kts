@@ -53,7 +53,7 @@ dependencies {
     api(libs.bundles.okhttp)
 
     // Moshi
-    api(libs.moshi)
+    implementation(libs.moshi)
     ksp(libs.moshi.codegen)
 
     // Hilt
