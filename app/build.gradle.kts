@@ -61,4 +61,7 @@ dependencies {
     // Hilt
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
+
+    // Coil
+    implementation(libs.coil)
 }

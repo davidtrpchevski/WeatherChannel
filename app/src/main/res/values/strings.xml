@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">WeatherChannel</string>
     <string name="searchbar_hint">Write a city name to search for</string>
+    <string name="title_current_temperature">%1$d \u2103</string>
+    <string name="title_high_temperature">High: %1$d \u2103</string>
+    <string name="title_low_temperature">Low: %1$d \u2103</string>
+    <string name="title_real_feel">%1$d \u2103\nReal Feel</string>
+    <string name="title_wind_speed">%1$d km/h\nWind Speed</string>
+    <string name="title_humidity">%1$d %%\nHumidity</string>
 </resources>
