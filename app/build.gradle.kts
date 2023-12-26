@@ -41,6 +41,8 @@ dependencies {
     implementation(libs.androidx.appCompat)
     implementation(libs.androidx.material)
     implementation(libs.androidx.constraintLayout)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     testImplementation(libs.unit.test.junit)
 
     // Android tests
