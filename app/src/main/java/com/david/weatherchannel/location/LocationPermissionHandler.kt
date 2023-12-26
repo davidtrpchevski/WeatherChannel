@@ -103,6 +103,11 @@ class LocationPermissionHandler @Inject constructor(
                 permissions.getOrDefault(ACCESS_COARSE_LOCATION, false) -> {
                     // Only approximate location access granted.
                     toaster.shortToast(R.string.using_approx_location)
+                    fragment.setFragmentResult(
+                        MULTIPLE_PERMISSIONS_REQUEST_KEY, bundleOf(
+                            MULTIPLE_PERMISSIONS_RESULT_KEY to true
+                        )
+                    )
                 }
 
                 else -> {

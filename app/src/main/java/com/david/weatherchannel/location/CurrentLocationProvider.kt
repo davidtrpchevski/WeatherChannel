@@ -26,6 +26,14 @@ class CurrentLocationProvider @Inject constructor(
 
     private val outdatedLocationThreshold: Long = 10.minutes.toLong(DurationUnit.MILLISECONDS)
 
+    private val locationProvider: String
+        get() =
+            when {
+                locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) -> LocationManager.GPS_PROVIDER
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) -> LocationManager.NETWORK_PROVIDER
+                else -> LocationManager.PASSIVE_PROVIDER
+            }
+
     @SuppressLint("MissingPermission")
     suspend fun getCurrentLocation(): Location = withContext(mainDispatcher) {
 
@@ -46,13 +54,13 @@ class CurrentLocationProvider @Inject constructor(
 
             try {
                 val lastKnownGPSLocation =
-                    locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                    locationManager.getLastKnownLocation(locationProvider)
 
                 if (lastKnownGPSLocation != null && lastKnownGPSLocation.time > System.currentTimeMillis() - outdatedLocationThreshold) {
                     locationListener.onLocationChanged(lastKnownGPSLocation)
                 } else {
                     locationManager.requestLocationUpdates(
-                        LocationManager.GPS_PROVIDER,
+                        locationProvider,
                         MIN_LOCATION_UPDATE_INTERVAL,
                         MIN_LOCATION_DISTANCE_DIFFERENCE,
                         locationListener
