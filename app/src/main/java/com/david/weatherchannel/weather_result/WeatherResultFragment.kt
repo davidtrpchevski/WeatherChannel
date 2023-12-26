@@ -15,8 +15,10 @@ import com.david.weatherchannel.extensions.isKeyboardVisible
 import com.david.weatherchannel.extensions.loadWeatherIcon
 import com.david.weatherchannel.extensions.onQueryTextSubmit
 import com.david.weatherchannel.extensions.repeatOnLifecycleStarted
+import com.david.weatherchannel.location.LocationPermissionHandler
 import com.david.weatherchannel.weather_result.viewmodel.WeatherResultViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @AndroidEntryPoint
@@ -25,15 +27,27 @@ class WeatherResultFragment : Fragment(R.layout.fragment_weather_result) {
     private val binding by viewBinding(FragmentWeatherResultBinding::bind)
     private val weatherResultModel by viewModels<WeatherResultViewModel>()
 
+    @Inject
+    lateinit var locationPermissionHandler: LocationPermissionHandler
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        locationPermissionHandler.checkLocationPermission(
+            onDenied = {
+
+            },
+            onGranted = {
+
+            }
+        )
 
         binding.searchBar.onQueryTextSubmit { query ->
             weatherResultModel.fetchWeatherByCity(query)
         }
 
         binding.searchBar.setOnQueryTextFocusChangeListener { _, hasFocus ->
-            binding.searchBar.isKeyboardVisible = hasFocus
+            view.isKeyboardVisible = hasFocus
         }
 
         repeatOnLifecycleStarted {
