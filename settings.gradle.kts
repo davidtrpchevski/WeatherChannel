@@ -13,6 +13,8 @@ dependencyResolutionManagement {
     }
 }
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = "WeatherChannel"
 include(":app")
 include(":networking")
+include(":service")
