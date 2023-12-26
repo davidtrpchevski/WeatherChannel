@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.david.networking.api_result.extensions.isLoading
+import com.david.networking.api_result.extensions.onApiError
 import com.david.networking.api_result.extensions.onSuccess
 import com.david.service.models.WeatherResultModel
 import com.david.weatherchannel.R
@@ -42,6 +43,7 @@ class WeatherResultFragment : Fragment(R.layout.fragment_weather_result) {
                 toaster.shortToast(R.string.enable_location_permissions)
             },
             onGranted = {
+                toaster.shortToast(R.string.location_loading_title)
                 weatherResultViewModel.getCurrentLocation()
             }
         )
@@ -57,9 +59,13 @@ class WeatherResultFragment : Fragment(R.layout.fragment_weather_result) {
         repeatOnLifecycleStarted {
             weatherResultViewModel.weatherResult.collect { result ->
                 binding.loadingProgress.isVisible = result.isLoading
-                result.onSuccess { weatherData ->
-                    binding.fillWeatherData(weatherData)
-                }
+                result
+                    .onSuccess { weatherData ->
+                        binding.fillWeatherData(weatherData)
+                    }
+                    .onApiError { _, _ ->
+                        toaster.longToast(R.string.error_title)
+                    }
             }
         }
     }

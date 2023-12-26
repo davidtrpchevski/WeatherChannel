@@ -10,4 +10,6 @@
     <string name="enable_gps">Please enable Location settings</string>
     <string name="using_approx_location">Using network to determine approximate location</string>
     <string name="enable_location_permissions">Please enable location permissions</string>
+    <string name="error_title">An error has occurred, try again later</string>
+    <string name="location_loading_title">Determining location via GPS, please wait!</string>
 </resources>
