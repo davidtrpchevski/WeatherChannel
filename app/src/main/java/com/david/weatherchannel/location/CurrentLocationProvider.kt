@@ -12,13 +12,23 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.DurationUnit
 
 class CurrentLocationProvider @Inject constructor(
     private val locationManager: LocationManager,
     @MainDispatcher private val mainDispatcher: CoroutineDispatcher
 ) {
+    companion object {
+        private const val MIN_LOCATION_UPDATE_INTERVAL = 1000L
+        private const val MIN_LOCATION_DISTANCE_DIFFERENCE = 0F
+    }
+
+    private val outdatedLocationThreshold: Long = 10.minutes.toLong(DurationUnit.MILLISECONDS)
+
     @SuppressLint("MissingPermission")
     suspend fun getCurrentLocation(): Location = withContext(mainDispatcher) {
+
         suspendCancellableCoroutine { continuation ->
 
             val locationListener = object : LocationListener {
@@ -35,12 +45,19 @@ class CurrentLocationProvider @Inject constructor(
             }
 
             try {
-                locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    0,
-                    0F,
-                    locationListener
-                )
+                val lastKnownGPSLocation =
+                    locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+
+                if (lastKnownGPSLocation != null && lastKnownGPSLocation.time > System.currentTimeMillis() - outdatedLocationThreshold) {
+                    locationListener.onLocationChanged(lastKnownGPSLocation)
+                } else {
+                    locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,
+                        MIN_LOCATION_UPDATE_INTERVAL,
+                        MIN_LOCATION_DISTANCE_DIFFERENCE,
+                        locationListener
+                    )
+                }
                 continuation.invokeOnCancellation { locationManager.removeUpdates(locationListener) }
             } catch (e: Exception) {
                 continuation.resumeWithException(e)
