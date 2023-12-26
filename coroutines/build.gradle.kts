@@ -3,10 +3,11 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+
 }
 
 android {
-    namespace = "com.david.service"
+    namespace = "com.david.coroutines"
     compileSdk = 34
 
     defaultConfig {
@@ -36,12 +37,8 @@ android {
 
 dependencies {
 
-    implementation(projects.networking)
-    implementation(projects.coroutines)
-
-    // Moshi
-    implementation(libs.moshi)
-    ksp(libs.moshi.codegen)
+    // Coroutines
+    implementation(libs.bundles.coroutines)
 
     // Hilt
     implementation(libs.hilt)

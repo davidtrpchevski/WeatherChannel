@@ -18,3 +18,4 @@ rootProject.name = "WeatherChannel"
 include(":app")
 include(":networking")
 include(":service")
+include(":coroutines")
