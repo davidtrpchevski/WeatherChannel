@@ -7,4 +7,6 @@
     <string name="title_real_feel">%1$d \u2103\nReal Feel</string>
     <string name="title_wind_speed">%1$d km/h\nWind Speed</string>
     <string name="title_humidity">%1$d %%\nHumidity</string>
+    <string name="enable_gps">Please enable Location settings</string>
+    <string name="using_approx_location">Using network to determine approximate location</string>
 </resources>

@@ -12,8 +12,10 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.clearFragmentResultListener
 import androidx.fragment.app.setFragmentResult
+import com.david.weatherchannel.R
 import com.david.weatherchannel.extensions.areLocationPermissionsGranted
 import com.david.weatherchannel.extensions.fragmentBooleanResult
+import com.david.weatherchannel.utils.Toaster
 import dagger.hilt.android.scopes.FragmentScoped
 import javax.inject.Inject
 
@@ -21,6 +23,7 @@ import javax.inject.Inject
 class LocationPermissionHandler @Inject constructor(
     private val fragment: Fragment,
     private val locationManager: LocationManager,
+    private val toaster: Toaster
 ) {
 
     private companion object {
@@ -32,18 +35,21 @@ class LocationPermissionHandler @Inject constructor(
         onDenied: () -> Unit,
         onGranted: () -> Unit
     ) {
-        if (!fragment.requireContext().areLocationPermissionsGranted()) {
-            getLocationPermissions(onDenied, onGranted)
-        } else {
-            onGranted()
+        checkForGPS {
+            if (!fragment.requireContext().areLocationPermissionsGranted()) {
+                getLocationPermissions(onDenied, onGranted)
+            } else {
+                onGranted()
+            }
         }
     }
 
-    fun checkForGPS(onGranted: () -> Unit) {
-        if (isLocationEnabled) {
-            onGranted()
-        } else {
+    private fun checkForGPS(onLocationAvailable: () -> Unit) {
+        if (!isLocationEnabled) {
+            toaster.shortToast(R.string.enable_gps)
             fragment.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+        } else {
+            onLocationAvailable()
         }
     }
 
@@ -51,8 +57,8 @@ class LocationPermissionHandler @Inject constructor(
         get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             locationManager.isLocationEnabled
         } else {
-            locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) || locationManager.isProviderEnabled(
-                LocationManager.GPS_PROVIDER
+            locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+                LocationManager.NETWORK_PROVIDER
             )
         }
 
@@ -96,6 +102,7 @@ class LocationPermissionHandler @Inject constructor(
 
                 permissions.getOrDefault(ACCESS_COARSE_LOCATION, false) -> {
                     // Only approximate location access granted.
+                    toaster.shortToast(R.string.using_approx_location)
                 }
 
                 else -> {

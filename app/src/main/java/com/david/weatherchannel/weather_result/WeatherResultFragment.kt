@@ -33,15 +33,6 @@ class WeatherResultFragment : Fragment(R.layout.fragment_weather_result) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        locationPermissionHandler.checkLocationPermission(
-            onDenied = {
-
-            },
-            onGranted = {
-
-            }
-        )
-
         binding.searchBar.onQueryTextSubmit { query ->
             weatherResultModel.fetchWeatherByCity(query)
         }
@@ -58,6 +49,18 @@ class WeatherResultFragment : Fragment(R.layout.fragment_weather_result) {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        locationPermissionHandler.checkLocationPermission(
+            onDenied = {
+
+            },
+            onGranted = {
+
+            }
+        )
     }
 
     private fun FragmentWeatherResultBinding.fillWeatherData(weatherResult: WeatherResultModel) {
