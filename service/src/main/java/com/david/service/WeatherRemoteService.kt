@@ -10,11 +10,13 @@ interface WeatherRemoteService {
     private companion object {
         private const val LATITUDE = "lat"
         private const val LONGITUDE = "lon"
+        private const val SEARCH_QUERY = "q"
     }
 
     @GET("weather")
-    suspend fun getCurrentWeatherData(
-        @Query(LATITUDE) latitude: Double?,
-        @Query(LONGITUDE) longitude: Double?
+    suspend fun getWeather(
+        @Query(LATITUDE) locationLatitude: Double? = null,
+        @Query(LONGITUDE) locationLongitude: Double? = null,
+        @Query(SEARCH_QUERY) searchQuery: String? = null,
     ): ApiResult<WeatherResultModel>
 }
