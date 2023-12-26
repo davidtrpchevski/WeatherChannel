@@ -21,6 +21,7 @@ android {
 
     buildFeatures.apply {
         buildConfig = true
+        viewBinding = true
     }
 
     buildTypes {

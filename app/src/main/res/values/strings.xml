@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">WeatherChannel</string>
+    <string name="searchbar_hint">Write a city name to search for</string>
 </resources>

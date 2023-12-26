@@ -52,3 +52,5 @@ inline fun <T> ApiResult<T>.onSuccess(function: (model: T) -> Unit): ApiResult<T
 
     return this
 }
+
+val <T> ApiResult<T>.isLoading get() = this is ApiResult.Loading
