@@ -1,22 +1,20 @@
 plugins {
-    alias(libs.plugins.android)
+    alias(libs.plugins.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.secrets)
 }
 
 android {
-    namespace = "com.david.weatherchannel"
+    namespace = "com.david.networking"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.david.weatherchannel"
         minSdk = 26
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildFeatures.apply {
@@ -41,18 +39,22 @@ android {
     }
 }
 
+secrets {
+    defaultPropertiesFileName = "secrets.defaults.properties"
+}
+
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appCompat)
-    implementation(libs.androidx.material)
-    implementation(libs.androidx.constraintLayout)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-    testImplementation(libs.unit.test.junit)
+    // Retrofit
+    api(libs.bundles.retrofit)
 
-    // Android tests
-    androidTestImplementation(libs.bundles.tests.android)
+    // OkHttp
+    api(platform(libs.okhttp.bom))
+    api(libs.bundles.okhttp)
+
+    // Moshi
+    api(libs.moshi)
+    ksp(libs.moshi.codegen)
 
     // Hilt
     implementation(libs.hilt)
