@@ -47,6 +47,8 @@ class WeatherResultFragment : Fragment(R.layout.fragment_weather_result) {
     }
 
     private fun FragmentWeatherResultBinding.fillWeatherData(weatherResult: WeatherResultModel) {
+        searchBar.setQuery(weatherResult.name, false)
+
         cityName.text = weatherResult.name
         weatherTemperature.text = getString(
             R.string.title_current_temperature,
